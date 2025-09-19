@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎉 Surpresa de Aniversário 🎉</title>
+<link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap" rel="stylesheet">
+<style>
+body {
+  margin: 0;
+  font-family: 'Racing Sans One', cursive, sans-serif;
+  background: linear-gradient(#ff0000, #111);
+  color: #fff;
+  text-align: center;
+  overflow-x: hidden;
+  position: relative;
+}
+header {
+  padding: 2rem;
+  background: black;
+  color: #FFD700;
+  font-size: 2.2rem;
+  font-weight: bold;
+  position: relative;
+  z-index: 2;
+  text-shadow: 2px 2px #000;
+}
+.mcqueen {
+  max-width: 80%;
+  width: 300px;
+  animation: drive 6s linear infinite;
+  position: relative;
+  z-index: 2;
+}
+@keyframes drive {
+  0% {transform: translateX(-400px);}
+  50% {transform: translateX(100vw);}
+  100% {transform: translateX(-400px);}
+}
+.message {
+  margin-top: 2rem;
+  font-size: 1.6rem;
+  position: relative;
+  z-index: 2;
+  text-shadow: 1px 1px #000;
+}
+.button {
+  margin: 2rem;
+  padding: 1.2rem 2.5rem;
+  font-size: 1.3rem;
+  background: #FFD700;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+  position: relative;
+  z-index: 2;
+  box-shadow: 2px 2px 5px #000;
+}
+.button:hover {
+  background: #fff;
+  color: #000;
+}
+.hidden-message {
+  display: none;
+  font-size: 1.6rem;
+  margin-top: 1rem;
+  color: #00ffcc;
+  animation: pop 1s ease;
+  position: relative;
+  z-index: 2;
+  text-shadow: 1px 1px #000;
+}
+@keyframes pop {
+  from {transform: scale(0);}
+  to {transform: scale(1);}
+}
+footer {
+  margin-top: 3rem;
+  padding: 1rem;
+  background: black;
+  font-size: 1rem;
+  position: relative;
+  z-index: 2;
+  text-shadow: 1px 1px #000;
+}
+#fireworksCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+#musicBtn {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  padding: 12px 18px;
+  background: #FFD700;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  z-index: 3;
+  box-shadow: 2px 2px 5px #000;
+}
+</style>
+</head>
+<body>
+<canvas id="fireworksCanvas"></canvas>
+<header>🏎️ Feliz Aniversário, JojoGaga! 🏁</header>
+
+<img src="https://upload.wikimedia.org/wikipedia/en/9/95/Mcqueenpromo.png" alt="McQueen" class="mcqueen">
+
+<div class="message" id="message">Hoje é o seu dia! 🎂<br>Que sua vida seja sempre <strong>mais rápida que o Relâmpago McQueen</strong> 🚗💨</div>
+
+<button class="button" onclick="showMessage()">Clique para a surpresa 🎉</button>
+<div id="surprise" class="hidden-message"></div>
+
+<button id="musicBtn" onclick="toggleMusic()">🔊 Música</button>
+<audio id="bgMusic" loop>
+  <source src="https://www.bensound.com/bensound-music/bensound-celebration.mp3" type="audio/mp3">
+</audio>
+
+<footer>Feito com ❤️ especialmente para você</footer>
+
+<script>
+  const surpriseMessages = [
+    '🏁 Cupom abraço !ABRAÇOBIGDADDY463!, um abraço grátis... te amo!! 🏆',
+    '🎉 Você é incrível, campeão!',
+    '🚗💨 Que sua vida seja sempre veloz e feliz!',
+    '⭐ Hoje é o seu dia especial!'
+  ];
+
+  function showMessage() {
+    const surpriseDiv = document.getElementById('surprise');
+    const randomMsg = surpriseMessages[Math.floor(Math.random() * surpriseMessages.length)];
+    surpriseDiv.textContent = randomMsg;
+    surpriseDiv.style.display = 'block';
+  }
+
+  // Música
+  const music = document.getElementById('bgMusic');
+  const musicBtn = document.getElementById('musicBtn');
+  let isPlaying = false;
+
+  function toggleMusic() {
+    if (isPlaying) {
+      music.pause();
+      musicBtn.textContent = '🔇 Música';
+    } else {
+      music.play();
+      musicBtn.textContent = '🔊 Música';
+    }
+    isPlaying = !isPlaying;
+  }
+
+  // Fogos de artifício
+  const canvas = document.getElementById('fireworksCanvas');
+  const ctx = canvas.getContext('2d');
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  class Firework {
+    constructor(x, y, colors) {
+      this.x = x;
+      this.y = y;
+      this.particles = [];
+      for (let i = 0; i < 100; i++) {
+        const angle = Math.random() * 2 * Math.PI;
+        const speed = Math.random() * 5 + 2;
+        this.particles.push({
+          x: x,
+          y: y,
+          dx: Math.cos(angle) * speed,
+          dy: Math.sin(angle) * speed,
+          life: 100,
+          color: colors[Math.floor(Math.random() * colors.length)]
+        });
+      }
+    }
+    update() {
+      this.particles.forEach(p => {
+        p.x += p.dx;
+        p.y += p.dy;
+        p.dy += 0.05;
+        p.life--;
+      });
+    }
+    draw() {
+      this.particles.forEach(p => {
+        if (p.life > 0) {
+          ctx.fillStyle = p.color;
+          ctx.fillRect(p.x, p.y, 2, 2);
+        }
+      });
+    }
+  }
+
+  let fireworks = [];
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    fireworks.forEach((f, index) => {
+      f.update();
+      f.draw();
+      if (f.particles.every(p => p.life <= 0)) {
+        fireworks.splice(index, 1);
+      }
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  setInterval(() => {
+    const x = Math.random() * canvas.width;
+    const y = Math.random() * canvas.height / 2;
+    const colors = ['#FFD700', '#FF0000', '#00FF00', '#00FFFF', '#FF00FF'];
+    fireworks.push(new Firework(x, y, colors));
+  }, 1500);
+</script>
+</body>
+</html>
